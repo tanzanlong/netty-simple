@@ -120,7 +120,7 @@ public abstract class AbstractNioChannel {
       Object pendingWrite = pendingWrites.poll();
       if (pendingWrite == null) {
         // We don't have anything more to write so channel is interested in reading more data
-        reactor.changeOps(key, SelectionKey.OP_READ);
+    //    reactor.changeOps(key, SelectionKey.OP_READ);
         break;
       }
 
@@ -172,6 +172,6 @@ public abstract class AbstractNioChannel {
       }
     }
     pendingWrites.add(data);
-    reactor.changeOps(key, SelectionKey.OP_WRITE);
+    //reactor.changeOps(key, SelectionKey.OP_WRITE);
   }
 }

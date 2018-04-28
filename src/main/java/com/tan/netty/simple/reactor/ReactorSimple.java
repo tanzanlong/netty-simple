@@ -1,11 +1,9 @@
 package com.tan.netty.simple.reactor;
 
-import java.io.IOException;
-import java.nio.channels.Selector;
 
 public class ReactorSimple {
 
-	private final Selector selector;
+/*	private final Selector selector;
 	
 	private final DispatcherService dispatcherService;
 	
@@ -16,7 +14,7 @@ public class ReactorSimple {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	
 }

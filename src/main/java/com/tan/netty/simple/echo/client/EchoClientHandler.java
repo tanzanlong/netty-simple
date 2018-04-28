@@ -21,7 +21,6 @@ public class EchoClientHandler
                 CharsetUtil.UTF_8));
     }
 
-    @Override
     public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
         System.out.println(
                 "Client received: " + in.toString(CharsetUtil.UTF_8));
@@ -33,4 +32,11 @@ public class EchoClientHandler
         cause.printStackTrace();
         ctx.close();
     }
+
+	@Override
+	protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }
