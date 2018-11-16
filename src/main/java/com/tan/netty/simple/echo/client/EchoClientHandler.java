@@ -33,10 +33,8 @@ public class EchoClientHandler
         ctx.close();
     }
 
-	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg)
 			throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 }
