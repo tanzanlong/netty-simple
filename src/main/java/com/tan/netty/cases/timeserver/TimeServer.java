@@ -1,4 +1,4 @@
-package com.tan.netty.cases;
+package com.tan.netty.cases.timeserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,10 +9,17 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class NettyServerInitCase {
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.tan.netty.cases.NettyServerInitCase;
+
+public class TimeServer {
+
+
     private int port;
 
-    public NettyServerInitCase(int port) {
+    public TimeServer(int port) {
         this.port = port;
     }
 
@@ -20,19 +27,30 @@ public class NettyServerInitCase {
         /*
          * ‘boss’，用来接收进来的连接。
          */
-        EventLoopGroup bossGroup = new NioEventLoopGroup(); 
+       // EventLoopGroup bossGroup = new NioEventLoopGroup(); 
+        
+        EventLoopGroup eventLoopGroupBoss = new NioEventLoopGroup(1, new ThreadFactory() {
+            private AtomicInteger threadIndex = new AtomicInteger(0);
+
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, String.format("boss_%d", this.threadIndex.incrementAndGet()));
+            }
+        });
+
+        
         /**
          * ‘worker’，用来处理已经被接收的连接
          */
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap(); 
-            b.group(bossGroup, workerGroup)
+            b.group(eventLoopGroupBoss, workerGroup)
              .channel(NioServerSocketChannel.class) 
              .childHandler(new ChannelInitializer<SocketChannel>() { 
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(new LogServerHandler());
+                     ch.pipeline().addLast(new TimeServerHandler());
                  }
              })
              .option(ChannelOption.SO_BACKLOG, 128)         
@@ -46,7 +64,7 @@ public class NettyServerInitCase {
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            eventLoopGroupBoss.shutdownGracefully();
         }
     }
 
@@ -59,4 +77,5 @@ public class NettyServerInitCase {
         }
         new NettyServerInitCase(port).run();
     }
+
 }
